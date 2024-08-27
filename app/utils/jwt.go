@@ -1,12 +1,14 @@
 package utils
 
 import (
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtKey = []byte("my_secret_key")
+var jwtKey = []byte(os.Getenv("JWT_SECRET_KEY"))
 
 // Credentials represents the login credentials
 type Credentials struct {
@@ -20,7 +22,6 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-// GenerateJWT creates a new JWT token
 func GenerateJWT(username string) (string, error) {
 	claims := Claims{
 		Username: username,
@@ -30,11 +31,11 @@ func GenerateJWT(username string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte("your-secret-key"))
+	return token.SignedString(jwtKey)
 }
 
-// ValidateJWT validates the given JWT and returns the username
 func ValidateJWT(tokenString string) (string, error) {
+	fmt.Printf("JWT_SECRET_KEY from env: %s\n", os.Getenv("JWT_SECRET_KEY"))
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
