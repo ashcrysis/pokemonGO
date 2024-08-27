@@ -10,7 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// Register a new user
 func Register(c *gin.Context) {
 	var creds utils.Credentials
 	if err := c.BindJSON(&creds); err != nil {
@@ -45,7 +44,6 @@ func Register(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User registered successfully"})
 }
 
-// Login authenticates the user and returns a JWT token
 func Login(c *gin.Context) {
 	var creds utils.Credentials
 	if err := c.BindJSON(&creds); err != nil {
@@ -75,7 +73,6 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"token": tokenString})
 }
 
-// Protected route that requires JWT authentication
 func Protected(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Welcome to the protected route!"})
 }
@@ -86,7 +83,6 @@ func Logoff(c *gin.Context) {
 		return
 	}
 
-	// Remove the "Bearer " prefix if present
 	if len(token) > 7 && token[:7] == "Bearer " {
 		token = token[7:]
 	}

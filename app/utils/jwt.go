@@ -10,13 +10,11 @@ import (
 
 var jwtKey = []byte(os.Getenv("JWT_SECRET_KEY"))
 
-// Credentials represents the login credentials
 type Credentials struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-// Define the claims struct
 type Claims struct {
 	Username string `json:"username"`
 	jwt.RegisteredClaims
@@ -26,7 +24,7 @@ func GenerateJWT(username string) (string, error) {
 	claims := Claims{
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(15 * time.Minute)), // 15 minutes expiry
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(15 * time.Minute)), 
 		},
 	}
 

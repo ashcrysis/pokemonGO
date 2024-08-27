@@ -5,7 +5,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// SetupDB initializes the database connection
 func SetupDB() *gorm.DB {
 	db, err := gorm.Open(sqlite.Open("users.db"), &gorm.Config{})
 	if err != nil {
