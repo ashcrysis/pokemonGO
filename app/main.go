@@ -7,6 +7,8 @@ import (
 	"app/models"
 	"log"
 
+	"github.com/gin-contrib/cors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -22,9 +24,11 @@ func main() {
 
 	r := gin.Default()
 
+	r.Use(cors.Default())
+
 	r.Use(middleware.InjectDB())
 
-	r.POST("/register", controllers.Register)
+	r.POST("/signup", controllers.Register)
 	r.POST("/login", controllers.Login)
 	r.POST("/logoff", controllers.Logoff)
 	r.GET("/protected", middleware.AuthenticateJWT(), controllers.Protected)

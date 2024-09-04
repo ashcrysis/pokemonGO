@@ -11,7 +11,7 @@ import (
 var jwtKey = []byte(os.Getenv("JWT_SECRET_KEY"))
 
 type Credentials struct {
-	Username string `json:"username"`
+	Email string `json:"email"`
 	Password string `json:"password"`
 }
 

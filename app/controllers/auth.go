@@ -20,8 +20,8 @@ func Register(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 
 	var existingUser models.User
-	if err := db.Where("username = ?", creds.Username).First(&existingUser).Error; err == nil {
-		c.JSON(http.StatusConflict, gin.H{"error": "Username already exists"})
+	if err := db.Where("email = ?", creds.Email).First(&existingUser).Error; err == nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "email already exists"})
 		return
 	}
 
@@ -32,7 +32,7 @@ func Register(c *gin.Context) {
 	}
 
 	user := models.User{
-		Username: creds.Username,
+		Email: creds.Email,
 		Password: string(hashedPassword),
 	}
 
@@ -54,7 +54,7 @@ func Login(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 
 	var user models.User
-	if err := db.Where("username = ?", creds.Username).First(&user).Error; err != nil {
+	if err := db.Where("email = ?", creds.Email).First(&user).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
@@ -64,11 +64,13 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	tokenString, err := utils.GenerateJWT(creds.Username)
+	tokenString, err := utils.GenerateJWT(creds.Email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create token"})
 		return
 	}
+
+	c.Header("Authorization", "Bearer "+tokenString)
 
 	c.JSON(http.StatusOK, gin.H{"token": tokenString})
 }
