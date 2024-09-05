@@ -6,6 +6,7 @@ import (
 	"app/middleware"
 	"app/models"
 	"log"
+	"time"
 
 	"github.com/gin-contrib/cors"
 
@@ -24,10 +25,26 @@ func main() {
 
 	r := gin.Default()
 
-	r.Use(cors.Default())
+	config := cors.Config{
+        AllowOrigins:     []string{"http://localhost:3000"},
+        AllowMethods:     []string{"POST", "GET", "PUT", "DELETE", "OPTIONS"},
+        AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
+        ExposeHeaders:    []string{"Authorization"},
+        AllowCredentials: true,
+        MaxAge: 12 * time.Hour,
+    }
+
+    r.Use(cors.New(config))
 
 	r.Use(middleware.InjectDB())
-
+	pokemonController := controllers.NewPokemonController()
+	pokemonRoutes := r.Group("v2/pokemons")
+	{
+		pokemonRoutes.GET("/search", pokemonController.Search)      
+		pokemonRoutes.GET("/fetch_all", pokemonController.FetchAllPokemonData) 
+		pokemonRoutes.GET("/species", pokemonController.Species)     
+		pokemonRoutes.GET("/toggle_api", pokemonController.ToggleAPI)   
+	}
 	r.POST("/signup", controllers.Register)
 	r.POST("/login", controllers.Login)
 	r.POST("/logoff", controllers.Logoff)
