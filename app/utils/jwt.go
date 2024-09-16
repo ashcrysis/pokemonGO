@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -53,4 +55,23 @@ func ValidateJWT(tokenString string) (string, error) {
 	}
 
 	return claims.Username, nil
+}
+
+func ParseJWT(tokenString string) (*Claims, error) {
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+
+	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method")
+		}
+		return jwtKey, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(*Claims); ok && token.Valid {
+		return claims, nil
+	}
+	return nil, errors.New("invalid token")
 }

@@ -45,6 +45,14 @@ func main() {
 		pokemonRoutes.GET("/species", pokemonController.Species)     
 		pokemonRoutes.GET("/toggle_api", pokemonController.ToggleAPI)   
 	}
+	v2 := r.Group("/v2")
+    {
+        users := v2.Group("/users")
+        {
+            users.GET("/current", middleware.AuthenticateJWT(), controllers.CurrentUser)
+			users.PUT("/update/:id", middleware.AuthenticateJWT(), controllers.UpdateUser)
+		}
+    }
 	r.POST("/signup", controllers.Register)
 	r.POST("/login", controllers.Login)
 	r.POST("/logoff", controllers.Logoff)

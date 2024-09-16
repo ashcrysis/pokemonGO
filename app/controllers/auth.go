@@ -4,6 +4,7 @@ import (
 	"app/models"
 	"app/utils"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -90,8 +91,11 @@ func Logoff(c *gin.Context) {
 		return
 	}
 
-	if len(token) > 7 && token[:7] == "Bearer " {
-		token = token[7:]
+	token = strings.TrimPrefix(token, "Bearer ")
+
+	if utils.IsBlacklisted(token) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Token already blacklisted"})
+		return
 	}
 
 	utils.AddToBlacklist(token)
