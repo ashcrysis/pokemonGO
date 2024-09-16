@@ -11,10 +11,19 @@ import (
 var jwtKey = []byte(os.Getenv("JWT_SECRET_KEY"))
 
 type Credentials struct {
-	Email string `json:"email"`
-	Password string `json:"password"`
+	Email      string `json:"email" binding:"required"`
+	Password   string `json:"password" binding:"required"`
+	Name       string `json:"name" binding:"required"`
+	Phone      string `json:"phone" binding:"required"`
+	PostalCode string `json:"postal_code" binding:"required"`
+	Street     string `json:"street" binding:"required"`
+	Number     string `json:"number" binding:"required"`
+	Complement string `json:"complement"` 
 }
-
+type LoginCredentials struct {
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
 type Claims struct {
 	Username string `json:"username"`
 	jwt.RegisteredClaims
