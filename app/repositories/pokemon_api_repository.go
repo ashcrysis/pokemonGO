@@ -61,7 +61,9 @@ func (repo *PokemonApiRepository) FetchAllAsJSON() map[string]interface{} {
 }
 func (repo *PokemonApiRepository) FetchPokemonSpeciesData(name string) (map[string]interface{}, error) {
 	url := fmt.Sprintf("%s-species/%s", POKEMON_API, name)
+	println(url)
 	resp, err := http.Get(url)
+	
 	if err != nil || resp.StatusCode != 200 {
 		return nil, fmt.Errorf("Pokémon not found")
 	}

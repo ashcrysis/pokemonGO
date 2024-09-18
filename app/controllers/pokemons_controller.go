@@ -25,7 +25,6 @@ func NewPokemonController() *PokemonController {
 
 func (pc *PokemonController) Search(c *gin.Context) {
 	name := c.Param("name")
-
 	if strings.TrimSpace(name) == "" || strings.ContainsAny(name, "0123456789") {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Pokémon name"})
 		return
@@ -46,15 +45,22 @@ func (pc *PokemonController) FetchAllPokemonData(c *gin.Context) {
 }
 
 func (pc *PokemonController) Species(c *gin.Context) {
-	name := c.Param("name")
-	data, err := pc.PokemonService.FetchPokemonSpeciesData(name) 
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-		return
-	}
+    name := c.Query("name") 
+    if name == "" {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Pokémon name is required"})
+        return
+    }
 
-	description := pc.PokemonService.FindEnglishDescription(data)  
-	c.JSON(http.StatusOK, gin.H{"description": description})
+    fmt.Println("Received Pokémon name:", name) 
+
+    data, err := pc.PokemonService.FetchPokemonSpeciesData(name)
+    if err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+        return
+    }
+
+    description := pc.PokemonService.FindEnglishDescription(data)
+    c.JSON(http.StatusOK, gin.H{"description": description})
 }
 
 func (pc *PokemonController) ToggleAPI(c *gin.Context) {

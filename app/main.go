@@ -33,9 +33,9 @@ func main() {
         AllowCredentials: true,
         MaxAge: 12 * time.Hour,
     }
-
+	
     r.Use(cors.New(config))
-
+	
 	r.Use(middleware.InjectDB())
 	pokemonController := controllers.NewPokemonController()
 	pokemonRoutes := r.Group("v2/pokemons")
@@ -47,9 +47,9 @@ func main() {
 	}
 	v2 := r.Group("/v2")
     {
-        users := v2.Group("/users")
+		users := v2.Group("/users")
         {
-            users.GET("/current", middleware.AuthenticateJWT(), controllers.CurrentUser)
+			users.GET("/current", middleware.AuthenticateJWT(), controllers.CurrentUser)
 			users.PUT("/update/:id", middleware.AuthenticateJWT(), controllers.UpdateUser)
 		}
     }
@@ -57,6 +57,6 @@ func main() {
 	r.POST("/login", controllers.Login)
 	r.POST("/logoff", controllers.Logoff)
 	r.GET("/protected", middleware.AuthenticateJWT(), controllers.Protected)
-
+	
 	r.Run(":8080")
 }
