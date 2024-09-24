@@ -19,7 +19,7 @@ type PokemonController struct {
 func NewPokemonController() *PokemonController {
 	return &PokemonController{
 		UseSecondAPI:   true,
-		PokemonService: services.NewPokemonService(&repositories.PokemonApiRepository{}),  
+		PokemonService: services.NewPokemonService(repositories.PokemonApiRepository{}),  
 	}
 }
 
@@ -40,7 +40,7 @@ func (pc *PokemonController) Search(c *gin.Context) {
 }
 
 func (pc *PokemonController) FetchAllPokemonData(c *gin.Context) {
-	response := pc.PokemonService.AllPokemons()  
+	response := pc.PokemonService.AllPokemons()
 	c.JSON(http.StatusOK, response)
 }
 
