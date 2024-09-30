@@ -57,6 +57,6 @@ func main() {
 	r.POST("/login", controllers.Login)
 	r.POST("/logoff", controllers.Logoff)
 	r.GET("/protected", middleware.AuthenticateJWT(), controllers.Protected)
-	
+	r.Static("/uploads", "./uploads")
 	r.Run(":8080")
 }
