@@ -10,4 +10,5 @@ type User struct {
 	Number      string
 	Complement  string 
 	Password    string
+	Image_url string
 }

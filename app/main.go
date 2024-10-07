@@ -38,13 +38,7 @@ func main() {
 	
 	r.Use(middleware.InjectDB())
 	pokemonController := controllers.NewPokemonController()
-	pokemonRoutes := r.Group("v2/pokemons")
-	{
-		pokemonRoutes.GET("/search", pokemonController.Search)      
-		pokemonRoutes.GET("/fetch_all", pokemonController.FetchAllPokemonData) 
-		pokemonRoutes.GET("/species", pokemonController.Species)     
-		pokemonRoutes.GET("/toggle_api", pokemonController.ToggleAPI)   
-	}
+	
 	v2 := r.Group("/v2")
     {
 		users := v2.Group("/users")
@@ -52,11 +46,18 @@ func main() {
 			users.GET("/current", middleware.AuthenticateJWT(), controllers.CurrentUser)
 			users.PUT("/update/:id", middleware.AuthenticateJWT(), controllers.UpdateUser)
 		}
+		pokemonRoutes := v2.Group("/pokemons")
+	{
+		pokemonRoutes.GET("/search", pokemonController.Search)      
+		pokemonRoutes.GET("/fetch_all", pokemonController.FetchAllPokemonData) 
+		pokemonRoutes.GET("/species", pokemonController.Species)     
+		pokemonRoutes.GET("/toggle_api", pokemonController.ToggleAPI)   
+	}
     }
 	r.POST("/signup", controllers.Register)
 	r.POST("/login", controllers.Login)
 	r.POST("/logoff", controllers.Logoff)
 	r.GET("/protected", middleware.AuthenticateJWT(), controllers.Protected)
-	
+	r.Static("/uploads", "./uploads")
 	r.Run(":8080")
 }
